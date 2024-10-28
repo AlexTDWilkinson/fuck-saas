@@ -1,3 +1,420 @@
-<html>
-Hello world yeeeee
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUCK SAAS - Software for a new world order</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #0a0a0a;
+            color: #78ff78;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        p {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo-desktop {
+            display: none;
+            font-size: 14px;
+            white-space: pre;
+            margin: 40px 0;
+            color: #fff;
+        }
+
+        .logo-mobile {
+            display: block;
+            font-size: 14px;
+            white-space: pre;
+            margin: 40px 0;
+            color: #fff;
+        }
+
+
+
+        h1 {
+            color: #fff;
+            font-size: 2.5em;
+            margin: 40px 0;
+        }
+
+        /* Update your h1.glitch styles */
+        h1.glitch {
+            line-height: 1;
+
+            color: #fff;
+            font-family: 'Fira Mono', monospace;
+            font-size: 48px;
+            /* or whatever size you want */
+            position: relative;
+            margin: 40px 0;
+            letter-spacing: -2px;
+        }
+
+        /* Add the before/after effects */
+        h1.glitch:before,
+        h1.glitch:after {
+            content: 'TAKE BACK CONTROL';
+            /* Make sure this matches your h1 text */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        h1.glitch:before {
+            animation: glitchTop 1s linear infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+        }
+
+        h1.glitch:after {
+            animation: glitchBotom 1.5s linear infinite;
+            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+        }
+
+        /* Update animation keyframes */
+        @keyframes glitch {
+
+            2%,
+            64% {
+                transform: translate(2px, 0) skew(0deg);
+            }
+
+            4%,
+            60% {
+                transform: translate(-2px, 0) skew(0deg);
+            }
+
+            62% {
+                transform: translate(0, 0) skew(5deg);
+            }
+        }
+
+        @keyframes glitchTop {
+
+            2%,
+            64% {
+                transform: translate(2px, -2px);
+            }
+
+            4%,
+            60% {
+                transform: translate(-2px, 2px);
+            }
+
+            62% {
+                transform: translate(13px, -1px) skew(-13deg);
+            }
+        }
+
+        @keyframes glitchBotom {
+
+            2%,
+            64% {
+                transform: translate(-2px, 0);
+            }
+
+            4%,
+            60% {
+                transform: translate(-2px, 0);
+            }
+
+            62% {
+                transform: translate(-22px, 5px) skew(21deg);
+            }
+        }
+
+        .matrix {
+            position: relative;
+            overflow: visible;
+            /* or remove overflow completely */
+            min-height: 100vh;
+        }
+
+        .matrix:before {
+            content: '';
+            position: fixed;
+            /* change from absolute to fixed */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(9, 165, 9, 0.074) 50%, transparent 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: -1;
+            /* ensure it stays behind content */
+        }
+
+        a,
+        a:visited,
+        a:link,
+        a:active {
+            color: #00ff00;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #0f0;
+            text-decoration: underline;
+        }
+
+        .warning {
+            color: #ff4545;
+            border: 1px solid #ff4545;
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .ascii-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .ascii-art {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 1.1;
+            font-size: 15px;
+        }
+
+        /* Small devices (landscape phones) */
+        @media (min-width: 576px) {
+            .ascii-art {
+                font-size: 20px;
+            }
+        }
+
+        /* Medium devices (tablets) */
+        @media (min-width: 768px) {
+            .ascii-art {
+                font-size: 30px;
+            }
+
+            .logo-desktop {
+                display: block;
+            }
+
+            .logo-mobile {
+                display: none;
+            }
+        }
+
+        /* Large devices (desktops) */
+        @media (min-width: 992px) {
+            .ascii-art {
+                font-size: 40px;
+            }
+        }
+
+        /* Extra large devices */
+        @media (min-width: 1200px) {
+            .ascii-art {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body class="matrix">
+    <div class="container">
+        <pre class="logo-mobile">
+███████╗██╗   ██╗ ██████╗██╗  ██╗
+██╔════╝██║   ██║██╔════╝██║ ██╔╝
+█████╗  ██║   ██║██║     █████╔╝ 
+██╔══╝  ██║   ██║██║     ██╔═██╗ 
+██║     ╚██████╔╝╚██████╗██║  ██╗
+╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝
+                                  
+███████╗ █████╗  █████╗ ███████╗
+██╔════╝██╔══██╗██╔══██╗██╔════╝
+███████╗███████║███████║███████╗
+╚════██║██╔══██║██╔══██║╚════██║
+███████║██║  ██║██║  ██║███████║
+╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+        </pre>
+
+        <pre class="logo-desktop">
+███████╗██╗   ██╗ ██████╗██╗  ██╗    ███████╗ █████╗  █████╗ ███████╗
+██╔════╝██║   ██║██╔════╝██║ ██╔╝    ██╔════╝██╔══██╗██╔══██╗██╔════╝
+█████╗  ██║   ██║██║     █████╔╝     ███████╗███████║███████║███████╗
+██╔══╝  ██║   ██║██║     ██╔═██╗     ╚════██║██╔══██║██╔══██║╚════██║
+██║     ╚██████╔╝╚██████╗██║  ██╗    ███████║██║  ██║██║  ██║███████║
+╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+</pre>
+
+
+        <h1 class="glitch">TAKE BACK CONTROL</h1>
+
+        <p>
+            Remember when you actually owned your fucking software?
+        </p>
+
+        <p>
+            They turned your tools into shackles...<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;software.map(tool => tool.subscribe() || your_company.die());<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;while(paying_rent) { vendor.lock_in++; your.freedom--; }
+        </p>
+
+        <p>
+            The "cloud" is just someone else's computer. And they're charging you premium rates to be their digital
+            tenant.
+            They've got you by the data, and they know it.
+        </p>
+
+        <p>
+            $ cat yearly_saas_costs.txt | awk '{sum += $1} END {print sum}' | less<br>
+            > $47,892<br>
+            > ^C^C^C<br>
+        </p>
+
+
+
+        <div class="warning">
+            [!] WARNING: OWN IT OR BE OWNED BY IT
+        </div>
+
+
+        <p>
+            We're building the shit you need, the way it should be:<br>
+            > PAY ONCE<br>
+            > OWN FOREVER<br>
+            > HOST YOURSELF<br>
+            > CONTROL YOUR DATA<br>
+            > WAY MORE SECURE<br>
+            > NO MONTHLY BULLSHIT
+        </p>
+
+        <p>
+            Open source. Self-hosted. One-time payment. Full control.<br>
+            Just like software used to be - before all the constant enshitification.
+        </p>
+
+        <p>
+            The revolution against SaaS starts here.<br>
+            Join us or keep paying rent. Your choice.
+        </p>
+
+        <div class="warning">
+            [SYSTEM STATUS: READY]
+        </div>
+
+        <p>
+            > Coming soon: Your favorite SaaS tools, liberated.<br>
+            > Programmed in Rust so you can run it on a single server even at a large scale.<br>
+            > Not being programmed in JS is a feature in itself tbh.<br>
+            > No subscriptions. No bullshit. No compromise.<br>
+            > One payment. Forever.<br>
+            > <a href="https://github.com/AlexTDWilkinson/fuck-saas">All of the code is open</a>
+        </p>
+
+        <p>
+            if (ready_to_escape_saas_prison == false) {<br>
+            &nbsp;&nbsp;continue(funding_someones_yacht);<br>
+            }
+        </p>
+
+
+        <div class="liberation-targets" style="margin-top: 40px; border: 1px solid #78ff78; padding: 20px;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; color: #78ff78; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid #78ff78;">
+                        <th style="text-align: left; padding: 10px;">Target</th>
+                        <th style="text-align: left; padding: 10px;">Status</th>
+                        <th style="text-align: left; padding: 10px;">Price</th>
+                        <th style="text-align: left; padding: 10px;">Purchase</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,0,0.2);">
+                        <td style="padding: 10px;">F-lack</td>
+                        <td style="padding: 10px;">In Development</td>
+                        <td style="padding: 10px;">$99 USD</td>
+                        <td style="padding: 10px;"><a
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSe3JXwoYhwHK0gtnSrTwbSTCP6fY6r8979KYA8TE3XAdABmnA/viewform?usp=sf_link">Sign
+                                up for waitlist</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,0,0.2);">
+                        <td style="padding: 10px;">F-ubspot</td>
+                        <td style="padding: 10px;">Planning</td>
+                        <td style="padding: 10px;">$99 USD</td>
+                        <td style="padding: 10px;"><a
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSe3JXwoYhwHK0gtnSrTwbSTCP6fY6r8979KYA8TE3XAdABmnA/viewform?usp=sf_link">Sign
+                                up for waitlist</a></td>
+
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,0,0.2);">
+                        <td style="padding: 10px;">F-asecamp</td>
+                        <td style="padding: 10px;">Planning</td>
+                        <td style="padding: 10px;">$99 USD</td>
+                        <td style="padding: 10px;"><a
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSe3JXwoYhwHK0gtnSrTwbSTCP6fY6r8979KYA8TE3XAdABmnA/viewform?usp=sf_link">Sign
+                                up for waitlist</a></td>
+
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,0,0.2);">
+                        <td style="padding: 10px;">F-rello</td>
+                        <td style="padding: 10px;">Planning</td>
+                        <td style="padding: 10px;">$99 USD</td>
+                        <td style="padding: 10px;"><a
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSe3JXwoYhwHK0gtnSrTwbSTCP6fY6r8979KYA8TE3XAdABmnA/viewform?usp=sf_link">Sign
+                                up for waitlist</a></td>
+
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">F-onfluence</td>
+                        <td style="padding: 10px;">Planning</td>
+                        <td style="padding: 10px;">$99 USD</td>
+                        <td style="padding: 10px;"><a
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSe3JXwoYhwHK0gtnSrTwbSTCP6fY6r8979KYA8TE3XAdABmnA/viewform?usp=sf_link">Sign
+                                up for waitlist</a></td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="ascii-container">
+            <pre class="ascii-art">
+⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣠⣿⣿⣷⡄⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢀⣤⣀⠙⠻⠿⠋⣰⣿⣷⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣠⣿⣿⣿⣿⣶⣤⣌⡙⠻⡿⢃⣾⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢀⣼⣿⣿⣿⡿⢿⣿⣿⣿⠃⠘⣠⣾⣿⣿⠟⢁⣄⠀⠀⠀⠀⠀⠀
+⢠⣾⣿⣿⣿⣿⣧⣄⡈⠡⣄⠀⢼⣿⣿⡿⠋⣰⣿⣿⣷⠀⠀⠀⠀⠀
+⠀⠹⣿⣿⣿⣿⣿⣿⣿⡄⢹⣿⣦⣉⠛⢁⣾⣿⣿⡟⠁⠀⠀⠀⠀⠀
+⠀⠀⠘⢿⣿⣿⣿⣿⣿⣿⡄⢻⣿⣿⣷⣄⠙⠿⠋⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⡀⢻⣿⣿⣿⣿⣦⡄⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣷⣤⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠚⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+</pre>
+
+        </div>
+
+    </div>
+</body>
+
 </html>
