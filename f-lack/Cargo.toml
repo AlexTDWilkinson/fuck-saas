@@ -1,0 +1,41 @@
+cargo-features = ["profile-rustflags", "codegen-backend"]
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(property_v2)'] }
+
+[package]
+name = "f_lack"
+version = "0.1.16"
+edition = "2021"
+
+[profile.dev]
+incremental = true
+opt-level = 0
+codegen-units = 256
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = 'abort'
+codegen-units = 1
+
+[dependencies]
+axum = { version = "0.7", features = ["macros", "multipart"] }
+serde = "1.0.185"
+time = { version = "0.3", features = ["serde"] }
+serde_json = { version = "1.0.107" }
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.4.13", features = ["util"] }
+tower-http = { version = "0.5", features = ["fs"] }
+uuid = { version = "1.4.1", features = ["serde", "v4"]  }
+xxhash-rust = { version = "0.8.6", features = ["xxh3"] }
+tokio-stream = { version = "0.1.14" }
+rayon = "1.10.0"
+rust-fuzzy-search = "0.1.1"
+sqlx = { version = "0.8.2", features = ["runtime-tokio-native-tls", "sqlite", "time","json"] }
+rand = "0.8.5"
+aes-gcm = "0.10.3"
+rstml-to-string-macro = "0.1.0"
+bcrypt = "0.15.1"
+dotenv = "0.15.0"
