@@ -1,8 +1,10 @@
 use crate::components::page_shell::page_shell;
-
+use crate::AppState;
+use axum::extract::State;
 use axum::http::HeaderMap;
 use axum::response::IntoResponse;
 use rstml_to_string_macro::html;
+use crate::channel::channel::Channel;
 
 fn header_menu() -> String {
     html! {
@@ -28,20 +30,33 @@ fn header_menu() -> String {
     }
 }
 
-fn sidebar() -> String {
+fn sidebar(v: Vec<Channel>) -> String {
     html! {
         <aside class="box" style="margin-top:16px;">
             <h3>Channels</h3>
             <nav>
                 <ul>
-                    <li><a href="#" class="link"># general</a></li>
-                    <li><a href="#" class="link"># random</a></li>
-                    <li><a href="#" class="link"># announcements</a></li>
+	{
+	    v.iter()
+		.map(|v| html! {
+		    <li><a href={format!("channel/{0}", v.name)} class="link"># { v.name.clone() } id={ v.id } </a></li>
+		}).collect::<Vec<String>>()
+		.join("")
+	}
                 </ul>
             </nav>
 
         </aside>
     }
+}
+
+fn failure_sidebar() -> String {
+   html! {
+        <aside class="box" style="margin-top:16px;">
+           <h3>Channels</h3>
+	   <b>Error loading channels</b>
+        </aside>
+    } 
 }
 
 fn chat_area() -> String {
@@ -238,12 +253,20 @@ fn chat_area() -> String {
 }
 
 #[axum::debug_handler]
-pub async fn chat(headers: axum::http::HeaderMap) -> impl IntoResponse {
+pub async fn chat(State(state): State<AppState>,
+		  headers: axum::http::HeaderMap) -> impl IntoResponse {
+
+    let channels = Channel::get_all_channels(&state.pool).await;
+    let sidebar : String = match channels {
+	None => failure_sidebar(),
+	Some(v) => sidebar(v)
+    };
+
     let html_content = html! {
         <div style="height: 100vh;">
             {header_menu()}
             <div style="height: calc(100% - 60px); position: relative;">
-                {sidebar()}
+                {sidebar}
                 {chat_area()}
             </div>
         </div>

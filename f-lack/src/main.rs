@@ -1,5 +1,7 @@
 pub mod auth;
 pub mod components;
+pub mod channel;
+pub mod message;
 pub mod error_template;
 pub mod fileserv;
 pub mod pages;
