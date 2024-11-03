@@ -42,4 +42,26 @@ impl Channel {
             _ => None,
         }
     }
+
+    pub async fn get_channel_chat_content(
+        pool: &SqlitePool,
+        channel_id: i64,
+    ) -> Option<Vec<String>> {
+        let messages = sqlx::query!(
+            "SELECT content FROM message WHERE channel_id = ? ORDER BY message_index DESC LIMIT 100",
+            channel_id
+        )
+        .fetch_all(pool)
+        .await;
+
+        if let Err(err) = messages {
+            eprintln!("get channel chat content error: {}", err);
+            return None;
+        }
+
+        match messages {
+            Ok(messages) => Some(messages.into_iter().map(|m| m.content).collect()),
+            _ => None,
+        }
+    }
 }

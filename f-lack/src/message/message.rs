@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
+use time::OffsetDateTime;
 
 #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
 pub struct Message {
+    pub created_at: Option<OffsetDateTime>,
     // The creator and created_at values are necessary for fast
     // metadata and also searching by datetimes.
     pub creator_id: i64,
@@ -22,10 +24,19 @@ pub struct Message {
 }
 
 impl Message {
-    pub async fn get_by_channel_id_and_message_index(channel_id: i64, message_index: i64, pool: &SqlitePool) -> Option<Self> {
-        let server_message = sqlx::query_as!(Message, "SELECT * FROM message WHERE channel_id = ? AND message_index = ?", channel_id, message_index)
-            .fetch_optional(pool)
-            .await;
+    pub async fn get_by_channel_id_and_message_index(
+        channel_id: i64,
+        message_index: i64,
+        pool: &SqlitePool,
+    ) -> Option<Self> {
+        let server_message = sqlx::query_as!(
+            Message,
+            "SELECT * FROM message WHERE channel_id = ? AND message_index = ?",
+            channel_id,
+            message_index
+        )
+        .fetch_optional(pool)
+        .await;
 
         if let Err(err) = server_message {
             println!("get by id error {:?}", err);
