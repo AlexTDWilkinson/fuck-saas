@@ -44,11 +44,11 @@ INSERT INTO channel (id,name,created_at)
 
 INSERT INTO message (created_at,creator_id,channel_id,content)
      VALUES ('2024-01-31 10:00:00', 1, 0, 'I am alice! Hello general channel'),
-            ('2024-01-31 10:01:00', 2, 0, 'Hi Alice! Welcome to general channel'),
-	        ('2024-01-31 10:02:00', 1, 0, 'Thanks for welcoming me Bob!'),
+            ('2024-01-31 10:01:00', 2, 0, 'Hi Alice! <b>Welcome to general channel</b>'),
+            ('2024-01-31 10:02:00', 1, 0, '<del>Thanks for welcoming me Bob! <img src="emotes/smile.png"/></del>'),
             ('2024-01-31 10:03:00', 2, 0,  'No problem Alice, its literally my job. They will actually fire me.'),
 	        ('2024-01-31 10:04:00', 1, 0,  'Oh, well then I retract my thanks.'),
-            ('2024-01-31 10:05:00', 2, 0, '*sigh*, its a living.'),
+            ('2024-01-31 10:05:00', 2, 0, '*sigh*, its a living.<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" /><img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" /><img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" />'),
             ('2024-01-31 10:06:00', 1, 1,  'Can I also post in the random channel?'),
             ('2024-01-31 10:07:00', 2, 1,  'Yeah, we cant stop you.'),
             ('2024-01-31 10:08:00', 1, 1,  'LOL! Thats funny'),
