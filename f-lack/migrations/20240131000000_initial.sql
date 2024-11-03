@@ -44,13 +44,17 @@ INSERT INTO channel (id,name,created_at)
             (2, 'Announcements', '2024-01-31 09:00:00');
 
 INSERT INTO message (created_at,creator_id,channel_id,content,edited_at)
-     VALUES ('2024-01-31 10:00:00', 1, 0, 'I am alice! Hello general channel', NULL),
-            ('2024-01-31 10:01:00', 2, 0, 'Hi Alice! Welcome to general channel', NULL),
-	        ('2024-01-31 10:02:00', 1, 0, 'Thanks for welcoming me Bob!', '2024-01-31 10:02:30'),
-            ('2024-01-31 10:03:00', 2, 0,  'No problem Alice, its literally my job. They will actually fire me.', NULL),
-	        ('2024-01-31 10:04:00', 1, 0,  'Oh, well then I retract my thanks.', NULL),
-            ('2024-01-31 10:05:00', 2, 0, '*sigh*, its a living.', '2024-01-31 10:05:45'),
-            ('2024-01-31 10:06:00', 1, 1,  'Can I also post in the random channel?', NULL),
-            ('2024-01-31 10:07:00', 2, 1,  'Yeah, we cant stop you.', NULL),
-            ('2024-01-31 10:08:00', 1, 1,  'LOL! Thats funny', '2024-01-31 10:08:15'),
-            ('2024-01-31 10:09:00', 2, 1,  'No literally, we have no security implement yet!', NULL);
+     VALUES ('2024-01-31 10:00:00', 1, 0, '<b>I am alice! Hello general channel</b>', NULL),
+            ('2024-01-31 10:01:00', 2, 0, 'Hi Alice! <i>Welcome to general channel</i>', NULL),
+            ('2024-01-31 10:02:00', 1, 0, '<del>Thanks for welcoming me Bob!</del> <img src="emotes/smile.png"/>', NULL),
+            ('2024-01-31 10:03:00', 2, 0, 'No problem Alice, its <b>literally</b> my job. They will actually fire me.', NULL),
+            ('2024-01-31 10:04:00', 1, 0, 'Oh, well then I <i>retract</i> my thanks.', NULL),
+            ('2024-01-31 10:05:00', 2, 0, '*sigh*, its a living.<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" />', NULL),
+            ('2024-01-31 10:06:00', 1, 1, '<b>Can I also post in the random channel?</b>', NULL),
+            ('2024-01-31 10:07:00', 2, 1, 'Yeah, we <del>cant</del> stop you.', NULL), 
+            ('2024-01-31 10:08:00', 1, 1, 'LOL! <i>Thats funny</i>', NULL),
+            ('2024-01-31 10:09:00', 2, 1, '<b>No literally</b>, we have no security implement yet!', NULL);
+
+
+
+            
