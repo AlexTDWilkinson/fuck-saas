@@ -17,7 +17,7 @@ fn sidebar_success(channels: Vec<Channel>) -> String {
     {
         channels.iter()
         .map(|channel| html! {
-            <li><a href={format!("channel/{}", channel.id)} class="link"># { channel.name.clone() } </a></li>
+            <li><a href={format!("/channel/{}", channel.id)} class="link"># { channel.name.clone() } </a></li>
         }).collect::<Vec<String>>()
         .join("")
     }

@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS message (
     channel_id INTEGER NOT NULL references channel(id),
     creator_id INTEGER NOT NULL references account(id),
     content TEXT NOT NULL,
+    edited_at TIMESTAMP,
     PRIMARY KEY (channel_id, created_at)
 );
 CREATE TABLE IF NOT EXISTS session (
@@ -42,6 +43,7 @@ INSERT INTO channel (id,name,created_at)
             (1, 'Random', '2024-01-31 09:00:00'),
             (2, 'Announcements', '2024-01-31 09:00:00');
 
+<<<<<<< HEAD
 INSERT INTO message (created_at,creator_id,channel_id,content)
      VALUES ('2024-01-31 10:00:00', 1, 0, 'I am alice! Hello general channel'),
             ('2024-01-31 10:01:00', 2, 0, 'Hi Alice! <b>Welcome to general channel</b>'),
@@ -53,3 +55,16 @@ INSERT INTO message (created_at,creator_id,channel_id,content)
             ('2024-01-31 10:07:00', 2, 1,  'Yeah, we cant stop you.'),
             ('2024-01-31 10:08:00', 1, 1,  'LOL! Thats funny'),
             ('2024-01-31 10:09:00', 2, 1,  'No literally, we have no security implement yet!');
+=======
+INSERT INTO message (created_at,creator_id,channel_id,content,edited_at)
+     VALUES ('2024-01-31 10:00:00', 1, 0, 'I am alice! Hello general channel', NULL),
+            ('2024-01-31 10:01:00', 2, 0, 'Hi Alice! Welcome to general channel', NULL),
+	        ('2024-01-31 10:02:00', 1, 0, 'Thanks for welcoming me Bob!', '2024-01-31 10:02:30'),
+            ('2024-01-31 10:03:00', 2, 0,  'No problem Alice, its literally my job. They will actually fire me.', NULL),
+	        ('2024-01-31 10:04:00', 1, 0,  'Oh, well then I retract my thanks.', NULL),
+            ('2024-01-31 10:05:00', 2, 0, '*sigh*, its a living.', '2024-01-31 10:05:45'),
+            ('2024-01-31 10:06:00', 1, 1,  'Can I also post in the random channel?', NULL),
+            ('2024-01-31 10:07:00', 2, 1,  'Yeah, we cant stop you.', NULL),
+            ('2024-01-31 10:08:00', 1, 1,  'LOL! Thats funny', '2024-01-31 10:08:15'),
+            ('2024-01-31 10:09:00', 2, 1,  'No literally, we have no security implement yet!', NULL);
+>>>>>>> 4bb2e5b (buncha cool changes super fun)

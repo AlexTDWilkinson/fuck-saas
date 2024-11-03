@@ -38,7 +38,7 @@ pub fn page_shell(
             <meta property="og:site_name" content="Flack">
             <link rel="icon" href="/favicon.ico">
             <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-            <title>{format!("{} - Flack", title)}</title>
+            <title>{format!("Flack - {}", title)}</title>
             <link rel="preload" href="/flack.css" {as_style} crossorigin="anonymous"/>
             <link rel="stylesheet" href="/flack.css" />
             {additional_meta_tags}

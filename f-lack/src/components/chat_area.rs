@@ -1,22 +1,49 @@
 use rstml_to_string_macro::html;
-pub fn chat_area(channel_chat_content: String, channel_id: i64) -> String {
+pub fn chat_area(
+    channel_name: String,
+    channel_chat_content: String,
+    channel_id: i64,
+    user_id: i64,
+) -> String {
     html! {
+
         <main class="box" style="margin-top:16px; ">
             <header>
-                <h2># general</h2>
+                <h2>"# "{channel_name}</h2>
             </header>
             <section class="messages" style="flex: 1; overflow-y: auto; padding: 1rem;">
             { channel_chat_content.split('\u{001E}').into_iter().map(|message| {
                 let parts: Vec<&str> = message.split('\u{001F}').collect();
-                let (content, creator_id, username, timestamp) = match parts.as_slice() {
-                    [content, creator_id, username, timestamp] => (content, creator_id, username, timestamp),
-                    _ => (&"", &"", &"", &""),
+                let (content, creator_id, username, timestamp, edited_at) = match parts.as_slice() {
+                    [content, creator_id, username, timestamp, edited_at] =>
+                        (content, creator_id, username, timestamp, edited_at),
+                    _ => (&"", &"", &"", &"", &""),
                 };
                 html! {
                     <article id={timestamp.to_string()}>
                         <div style="display: flex; align-items: baseline; gap: 0.5rem;">
-                            <strong>{username}</strong>
-                            <span style="color: var(--text-secondary); font-size: 0.8rem;">{timestamp}</span>
+                            <strong>{username}</strong>  {if *creator_id == user_id.to_string()
+                                {
+                                    html! {
+                                        <button
+                                            onclick={format!("deleteMessage('{}')", timestamp)}
+                                            class="button"
+                                            style="font-size: 0.8rem; padding: 0.2rem 0.5rem;"
+                                        >
+                                            Delete
+                                        </button>
+                                    }}
+                                else {
+                                    "".to_string()
+                                }
+                            }
+                            <span style="color: var(--text-secondary); font-size: 0.8rem;">
+                            {if edited_at != &"" {
+                                format!("{} (edited)", edited_at.to_string())
+                                } else {
+                                   timestamp.to_string()
+                                }}
+                            </span>
                         </div>
                         <p>{content}</p>
                     </article>
@@ -63,7 +90,8 @@ pub fn chat_area(channel_chat_content: String, channel_id: i64) -> String {
         {format!(r###"  <script defer>
             const dropZone = document.getElementById('drop-zone');
             const messageInput = document.getElementById('message-input');
-            const channelId = {};  // Will interpolate channel_id here
+            const channelId = {};  
+            const userId = {};
 
             // Message sending
             async function sendMessage() {{
@@ -109,8 +137,36 @@ pub fn chat_area(channel_chat_content: String, channel_id: i64) -> String {
                     // TODO: Implement file upload
                     console.log('Files dropped:', files);
                 }}
-            }});  </script>
-        "###, channel_id)}
+            }}); 
+            
+            
+
+
+            async function deleteMessage(timestamp) {{
+    try {{
+        const response = await fetch('/api/messages/delete', {{
+            method: 'POST',
+            headers: {{'Content-Type': 'application/json'}},
+            body: JSON.stringify({{
+                channel_id: channelId,
+                created_at: timestamp
+            }})
+            }});
+
+        if (response.ok) {{
+            document.getElementById(timestamp).remove();
+            }}
+            }} catch (error) {{
+        console.error('Error deleting message:', error);
+            }}
+            }}
+
+            
+            
+            
+            
+             </script>
+        "###, channel_id, user_id)}
 
 
         </main>
