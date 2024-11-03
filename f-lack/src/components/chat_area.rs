@@ -1,20 +1,27 @@
 use rstml_to_string_macro::html;
-pub fn chat_area(channel_chat_content: Vec<String>, channel_id: i64) -> String {
+pub fn chat_area(channel_chat_content: String, channel_id: i64) -> String {
     html! {
         <main class="box" style="margin-top:16px; ">
             <header>
                 <h2># general</h2>
             </header>
             <section class="messages" style="flex: 1; overflow-y: auto; padding: 1rem;">
-                { channel_chat_content.iter().map(|message| html! {
-                    <article>
+            { channel_chat_content.split('\u{001E}').into_iter().map(|message| {
+                let parts: Vec<&str> = message.split('\u{001F}').collect();
+                let (content, creator_id, username, timestamp) = match parts.as_slice() {
+                    [content, creator_id, username, timestamp] => (content, creator_id, username, timestamp),
+                    _ => (&"", &"", &"", &""),
+                };
+                html! {
+                    <article id={timestamp.to_string()}>
                         <div style="display: flex; align-items: baseline; gap: 0.5rem;">
-                            <strong>{"User"}</strong>
-                            <span style="color: var(--text-secondary); font-size: 0.8rem;">{"Time"}</span>
+                            <strong>{username}</strong>
+                            <span style="color: var(--text-secondary); font-size: 0.8rem;">{timestamp}</span>
                         </div>
-                        <p>{message}</p>
+                        <p>{content}</p>
                     </article>
-                }).collect::<Vec<String>>().join("") }
+                }
+            }).collect::<Vec<String>>().join("") }
 
             </section>
             <footer>
@@ -51,48 +58,61 @@ pub fn chat_area(channel_chat_content: Vec<String>, channel_id: i64) -> String {
                 </button>
                 </div>
             </footer>
-            {r#"<script>
-                function toggleDropZone() {
-                    const dropZone = document.getElementById('drop-zone');
-                    dropZone.style.display = dropZone.style.display === 'none' ? 'block' : 'none';
-                }
 
-                function sendMessage() {
-                    const input = document.getElementById('message-input');
-                    const message = input.value;
-                    if (message.trim()) {
-                        // Here you would typically send the message to your server
-                        console.log('Sending message:', message);
-                        input.value = '';
-                    }
-                }
 
-                const dropZone = document.getElementById('drop-zone');
+        {format!(r###"  <script defer>
+            const dropZone = document.getElementById('drop-zone');
+            const messageInput = document.getElementById('message-input');
+            const channelId = {};  // Will interpolate channel_id here
 
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.style.borderColor = 'var(--accent-color)';
-                });
+            // Message sending
+            async function sendMessage() {{
+                const message = messageInput.value.trim();
+                if (!message) return;
 
-                dropZone.addEventListener('dragleave', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.style.borderColor = 'var(--border-color)';
-                });
+                try {{
+                    const response = await fetch('/api/messages', {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{
+                            channel_id: channelId,
+                            content: message
+                        }})
+                    }});
 
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.style.borderColor = 'var(--border-color)';
-                    
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        // Here you would typically handle the file upload
-                        console.log('Files dropped:', files);
-                    }
-                });
-            </script>"#}
+                    if (response.ok) {{
+                        messageInput.value = '';
+                        // TODO: Refresh messages
+                    }}
+                }} catch (error) {{
+                    console.error('Error sending message:', error);
+                }}
+            }}
+
+            // File upload handling
+            function toggleDropZone() {{
+                dropZone.style.display = dropZone.style.display === 'none' ? 'block' : 'none';
+            }}
+
+            function handleDragEvent(e, highlight) {{
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.style.borderColor = highlight ? 'var(--accent-color)' : 'var(--border-color)';
+            }}
+
+            dropZone.addEventListener('dragover', e => handleDragEvent(e, true));
+            dropZone.addEventListener('dragleave', e => handleDragEvent(e, false));
+            dropZone.addEventListener('drop', e => {{
+                handleDragEvent(e, false);
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {{
+                    // TODO: Implement file upload
+                    console.log('Files dropped:', files);
+                }}
+            }});  </script>
+        "###, channel_id)}
+
+
         </main>
     }
 }

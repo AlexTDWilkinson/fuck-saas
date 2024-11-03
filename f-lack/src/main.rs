@@ -1,12 +1,14 @@
 pub mod auth;
 pub mod channel;
 pub mod components;
+pub mod endpoints;
 pub mod error_template;
 pub mod fileserv;
 pub mod message;
 pub mod pages;
 
 use crate::auth::auth::{login, logout, signup};
+use crate::endpoints::message_create::message_create;
 use crate::fileserv::file_and_error_handler;
 use crate::pages::channel_page::channel_page;
 use crate::pages::home::home;
@@ -64,6 +66,7 @@ async fn main() {
         .route("/logout", get(logout))
         // Main pages
         .route("/channel/:channel_id", get(channel_page))
+        .route("/api/messages", post(message_create))
         .route("/", get(home))
         // .route("/channel/:channel_name", get(channel))
         // .route("/dm/:user_id", get(direct_messages))

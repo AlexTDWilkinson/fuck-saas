@@ -1,13 +1,21 @@
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
+use std::time::Instant;
+use time::OffsetDateTime;
 
 #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
 pub struct Channel {
-    // Channels are just an id and a name, no metadata about creation times
-    // or whom or what at this point.
     pub id: i64,
     pub name: String,
-    // pub created_at: OffsetDateTime,
+    pub created_at: Option<OffsetDateTime>,
+}
+
+#[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
+struct MessageWithUser {
+    pub content: String,
+    pub creator_id: i64,
+    pub username: String,
+    pub created_at: Option<OffsetDateTime>,
 }
 
 impl Channel {
@@ -43,25 +51,60 @@ impl Channel {
         }
     }
 
-    pub async fn get_channel_chat_content(
+    pub async fn get_channel_messages_with_users(
         pool: &SqlitePool,
         channel_id: i64,
-    ) -> Option<Vec<String>> {
-        let messages = sqlx::query!(
-            "SELECT content FROM message WHERE channel_id = ? ORDER BY message_index DESC LIMIT 100",
+    ) -> Option<String> {
+        let start = Instant::now();
+
+        let messages = sqlx::query_as!(
+            MessageWithUser,
+            r#"
+                SELECT 
+                    m.content,
+                    m.creator_id,
+                    a.username as "username!", 
+                    m.created_at
+                FROM message m
+                JOIN account a ON m.creator_id = a.id
+                WHERE m.channel_id = ?
+                ORDER BY m.created_at ASC
+                LIMIT 100
+                "#,
             channel_id
         )
         .fetch_all(pool)
         .await;
 
-        if let Err(err) = messages {
-            eprintln!("get channel chat content error: {}", err);
-            return None;
+        let duration = start.elapsed();
+        println!("Query execution time: {:?}", duration);
+
+        // Add debug logging
+        match &messages {
+            Ok(msgs) => println!("Found {} messages", msgs.len()),
+            Err(e) => println!("Query error: {}", e),
         }
+        let now = OffsetDateTime::now_utc();
 
         match messages {
-            Ok(messages) => Some(messages.into_iter().map(|m| m.content).collect()),
-            _ => None,
+            Ok(messages) => Some(
+                messages
+                    .into_iter()
+                    .map(|m| {
+                        let timestamp = m.created_at.unwrap_or(OffsetDateTime::now_utc());
+
+                        format!(
+                            "{}\u{001F}{}\u{001F}{}\u{001F}{}",
+                            m.content, m.creator_id, m.username, timestamp
+                        )
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\u{001E}"),
+            ),
+            Err(err) => {
+                eprintln!("get channel messages with users error: {}", err);
+                None
+            }
         }
     }
 }

@@ -16,10 +16,10 @@ pub async fn channel_page(
 ) -> impl IntoResponse {
     let (channels, channel_chat_content) = tokio::join!(
         Channel::get_all_channels(&state.pool),
-        Channel::get_channel_chat_content(&state.pool, channel_id),
+        Channel::get_channel_messages_with_users(&state.pool, channel_id)
     );
 
-    let channel_chat_content = channel_chat_content.unwrap_or(vec![]);
+    let channel_chat_content: String = channel_chat_content.unwrap_or("".to_string());
 
     let html_content = html! {
         <div style="height: 100vh;">
