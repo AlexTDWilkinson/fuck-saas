@@ -3,6 +3,7 @@ pub mod channel;
 pub mod components;
 pub mod endpoints;
 pub mod error_template;
+use crate::endpoints::message_delete::message_delete;
 pub mod fileserv;
 pub mod message;
 pub mod pages;
@@ -66,6 +67,7 @@ async fn main() {
         .route("/logout", get(logout))
         // Main pages
         .route("/channel/:channel_id", get(channel_page))
+        .route("/api/messages/delete", post(message_delete))
         .route("/api/messages", post(message_create))
         .route("/", get(home))
         // .route("/channel/:channel_name", get(channel))

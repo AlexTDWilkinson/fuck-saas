@@ -18,6 +18,7 @@ pub struct Message {
     // encoded as content. This makes it invisible to the database,
     // but also very flexible.
     pub content: String,
+    pub edited_at: Option<OffsetDateTime>,
 }
 
 impl Message {
@@ -28,7 +29,7 @@ impl Message {
     ) -> Option<Self> {
         let server_message = sqlx::query_as!(
             Message,
-            "SELECT * FROM message WHERE channel_id = ? AND created_at = ?",
+            "SELECT created_at, creator_id, channel_id, content, edited_at FROM message WHERE channel_id = ? AND created_at = ?",
             channel_id,
             timestamp
         )

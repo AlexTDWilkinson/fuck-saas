@@ -16,13 +16,18 @@ struct MessageWithUser {
     pub creator_id: i64,
     pub username: String,
     pub created_at: Option<OffsetDateTime>,
+    pub edited_at: Option<OffsetDateTime>,
 }
 
 impl Channel {
     pub async fn get_channel_by_id(id: i64, pool: &SqlitePool) -> Option<Self> {
-        let server_channel = sqlx::query_as!(Channel, "SELECT * FROM channel WHERE id = ?", id)
-            .fetch_optional(pool)
-            .await;
+        let server_channel = sqlx::query_as!(
+            Channel,
+            "SELECT id, name, created_at FROM channel WHERE id = ?",
+            id
+        )
+        .fetch_optional(pool)
+        .await;
 
         if let Err(err) = server_channel {
             println!("get by id error {:?}", err);
@@ -36,9 +41,12 @@ impl Channel {
     }
 
     pub async fn get_all_channels(pool: &SqlitePool) -> Option<Vec<Self>> {
-        let server_channels = sqlx::query_as!(Channel, "SELECT * FROM channel ORDER BY name")
-            .fetch_all(pool)
-            .await;
+        let server_channels = sqlx::query_as!(
+            Channel,
+            "SELECT id, name, created_at FROM channel ORDER BY name"
+        )
+        .fetch_all(pool)
+        .await;
 
         if let Err(err) = server_channels {
             println!("get all channels error {:?}", err);
@@ -64,7 +72,8 @@ impl Channel {
                     m.content,
                     m.creator_id,
                     a.username as "username!", 
-                    m.created_at
+                    m.created_at,
+                    m.edited_at
                 FROM message m
                 JOIN account a ON m.creator_id = a.id
                 WHERE m.channel_id = ?
@@ -84,7 +93,6 @@ impl Channel {
             Ok(msgs) => println!("Found {} messages", msgs.len()),
             Err(e) => println!("Query error: {}", e),
         }
-        let now = OffsetDateTime::now_utc();
 
         match messages {
             Ok(messages) => Some(
@@ -94,8 +102,12 @@ impl Channel {
                         let timestamp = m.created_at.unwrap_or(OffsetDateTime::now_utc());
 
                         format!(
-                            "{}\u{001F}{}\u{001F}{}\u{001F}{}",
-                            m.content, m.creator_id, m.username, timestamp
+                            "{}\u{001F}{}\u{001F}{}\u{001F}{}\u{001F}{}",
+                            m.content,
+                            m.creator_id,
+                            m.username,
+                            timestamp,
+                            m.edited_at.map_or("".to_string(), |dt| dt.to_string())
                         )
                     })
                     .collect::<Vec<String>>()
