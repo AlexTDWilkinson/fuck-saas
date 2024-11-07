@@ -4,27 +4,17 @@ use time::OffsetDateTime;
 
 #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
 pub struct Message {
-    pub created_at: Option<OffsetDateTime>, // Changed to non-optional since it's part of primary key
-    // The creator and created_at values are necessary for fast
-    // metadata and also searching by datetimes.
+    pub created_at: i64, // Unix timestamp in milliseconds
     pub creator_id: i64,
-
-    // A message's unique id is composite of channel_id and created_at timestamp
-    // This provides natural chronological ordering
     pub channel_id: i64,
-
-    // The rest of the data (message state, including history, deleted
-    // status, links, metadata for plugins, embedded images, etc) is
-    // encoded as content. This makes it invisible to the database,
-    // but also very flexible.
     pub content: String,
-    pub edited_at: Option<OffsetDateTime>,
+    pub edited_at: Option<i64>, // Unix timestamp in milliseconds
 }
 
 impl Message {
     pub async fn get_by_channel_id_and_timestamp(
         channel_id: i64,
-        timestamp: OffsetDateTime,
+        timestamp: i64,
         pool: &SqlitePool,
     ) -> Option<Self> {
         let server_message = sqlx::query_as!(
@@ -46,4 +36,13 @@ impl Message {
             _ => None,
         }
     }
+}
+
+#[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
+pub struct MessageWithUser {
+    pub content: String,
+    pub creator_id: i64,
+    pub username: String,
+    pub created_at: i64,
+    pub edited_at: Option<i64>,
 }

@@ -7,9 +7,13 @@ use crate::endpoints::message_delete::message_delete;
 pub mod fileserv;
 pub mod message;
 pub mod pages;
+pub mod utils;
 
 use crate::auth::auth::{login, logout, signup};
 use crate::endpoints::message_create::message_create;
+use crate::endpoints::message_edit::message_edit;
+
+use crate::endpoints::message_poll::message_poll;
 use crate::fileserv::file_and_error_handler;
 use crate::pages::channel_page::channel_page;
 use crate::pages::home::home;
@@ -74,6 +78,10 @@ async fn main() {
         // .route("/dm/:user_id", get(direct_messages))
         // .route("/settings", get(user_settings))
         // .route("/workspace/settings", get(workspace_settings))
+        // Polling
+        .route("/api/messages/poll", get(message_poll))
+        // Edit
+        .route("/api/messages/edit", post(message_edit))
         // Fallback
         .fallback(file_and_error_handler)
         .with_state(app_state);

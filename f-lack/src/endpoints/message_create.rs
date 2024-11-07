@@ -8,6 +8,7 @@ use axum::{
 };
 use serde::Deserialize;
 use time::OffsetDateTime;
+
 use tokio::time::Duration;
 // Add this with your other routes in the Router setup
 
@@ -20,7 +21,7 @@ pub async fn message_create(
     let creator_id = 1;
 
     loop {
-        let now = OffsetDateTime::now_utc();
+        let now: i64 = (OffsetDateTime::now_utc().unix_timestamp_nanos() / 1_000_000) as i64;
 
         match sqlx::query!(
             "INSERT INTO message (channel_id, created_at, creator_id, content) 

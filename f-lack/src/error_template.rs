@@ -25,7 +25,6 @@ pub fn error_template(errors: Option<Vec<(String, String)>>) -> impl IntoRespons
         "".to_string(),
     );
     axum::http::Response::builder()
-        .header(axum::http::header::CACHE_CONTROL, "public, max-age=86400")
         .header(axum::http::header::CONTENT_TYPE, "text/html")
         .body(shelled_content)
         .expect("Failed to render home page")

@@ -21,7 +21,7 @@ pub fn page_shell(
     </script>
     "#;
 
-    let as_style = r#"as="style""#;
+    let style = format!("<style>{}</style>", include_str!("../../styles/main.css"));
 
     html! {
         <!DOCTYPE html>
@@ -39,8 +39,7 @@ pub fn page_shell(
             <link rel="icon" href="/favicon.ico">
             <link rel="apple-touch-icon" href="/apple-touch-icon.png">
             <title>{format!("Flack - {}", title)}</title>
-            <link rel="preload" href="/flack.css" {as_style} crossorigin="anonymous"/>
-            <link rel="stylesheet" href="/flack.css" />
+           {style}
             {additional_meta_tags}
             {fouc_prevention_script}
         </head>

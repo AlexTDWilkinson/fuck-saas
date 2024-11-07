@@ -12,7 +12,7 @@ use tower::util::ServiceExt;
 use tower_http::services::ServeDir;
 
 pub async fn file_and_error_handler(uri: Uri, req: Request<Body>) -> impl IntoResponse {
-    let root = "public";
+    let root = "db/files";
     let res = get_static_file(uri.clone(), &root).await.unwrap();
 
     if res.status() == StatusCode::OK {

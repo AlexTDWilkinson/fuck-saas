@@ -1,22 +1,13 @@
+use crate::message::message::MessageWithUser;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use std::time::Instant;
-use time::OffsetDateTime;
 
 #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
 pub struct Channel {
     pub id: i64,
     pub name: String,
-    pub created_at: Option<OffsetDateTime>,
-}
-
-#[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
-struct MessageWithUser {
-    pub content: String,
-    pub creator_id: i64,
-    pub username: String,
-    pub created_at: Option<OffsetDateTime>,
-    pub edited_at: Option<OffsetDateTime>,
+    pub created_at: i64,
 }
 
 impl Channel {
@@ -99,14 +90,12 @@ impl Channel {
                 messages
                     .into_iter()
                     .map(|m| {
-                        let timestamp = m.created_at.unwrap_or(OffsetDateTime::now_utc());
-
                         format!(
                             "{}\u{001F}{}\u{001F}{}\u{001F}{}\u{001F}{}",
                             m.content,
                             m.creator_id,
                             m.username,
-                            timestamp,
+                            m.created_at,
                             m.edited_at.map_or("".to_string(), |dt| dt.to_string())
                         )
                     })

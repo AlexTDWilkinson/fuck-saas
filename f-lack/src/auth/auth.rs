@@ -12,7 +12,7 @@ use rand::RngCore;
 use serde::{Deserialize, Serialize};
 use std::sync::LazyLock;
 use time::format_description;
-use time::OffsetDateTime;
+
 use time::PrimitiveDateTime;
 use tokio::time::Duration;
 
@@ -24,15 +24,15 @@ const SESSION_MAX_AGE_SECONDS: u32 = 3600; // 4 hours
 #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
 pub struct User {
     pub id: i64,
-    pub username: String,
+    pub username: Option<String>,
     pub email: String,
     #[serde(skip_serializing)]
     pub password_hash: String,
-    pub created_at: Option<OffsetDateTime>,
-    pub permissions: String,
+    pub created_at: i64,
+    pub permissions: Option<String>,
     pub set_password_mode: bool,
-    pub set_password_pin: i64,
-    pub set_password_attempts: i64,
+    pub set_password_pin: Option<i64>,
+    pub set_password_attempts: Option<i64>,
     pub user_disabled: bool,
     pub user_deleted: bool,
 }
@@ -62,13 +62,32 @@ use sqlx::SqlitePool;
 
 impl User {
     pub fn is_admin(&self) -> bool {
-        self.permissions.contains(&"admin".to_string())
+        self.permissions
+            .as_ref()
+            .map(|p| p.contains("admin"))
+            .unwrap_or(false)
     }
 
     pub async fn get_by_id(id: i64, pool: &SqlitePool) -> Option<Self> {
-        let server_user = sqlx::query_as!(User, "SELECT * FROM account WHERE id = ?", id)
-            .fetch_optional(pool)
-            .await;
+        let server_user = sqlx::query_as!(
+            User,
+            r#"SELECT 
+                id,
+                username,
+                email,
+                password_hash,
+                created_at,
+                permissions,
+                set_password_mode,
+                set_password_pin,
+                set_password_attempts,
+                user_disabled,
+                user_deleted
+            FROM account WHERE id = ?"#,
+            id
+        )
+        .fetch_optional(pool)
+        .await;
 
         if let Err(err) = server_user {
             println!("get by id error {:?}", err);
@@ -85,7 +104,19 @@ impl User {
         // Case insensitive lookup. Not super performant but probably not a problem for years/decades/ever.
         let server_user = sqlx::query_as!(
             User,
-            r#"SELECT * FROM account WHERE LOWER(email) LIKE LOWER(?)"#,
+            r#"SELECT 
+                id,
+                username,
+                email,
+                password_hash,
+                created_at,
+                permissions,
+                set_password_mode,
+                set_password_pin,
+                set_password_attempts,
+                user_disabled,
+                user_deleted
+            FROM account WHERE LOWER(email) LIKE LOWER(?)"#,
             email
         )
         .fetch_optional(pool)
@@ -106,7 +137,7 @@ impl User {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, sqlx::FromRow)]
 pub struct FlackSession {
     pub user_id: i64,
-    pub valid_until: OffsetDateTime,
+    pub valid_until: i64,
 }
 
 impl FlackSession {
@@ -225,12 +256,13 @@ impl FlackSession {
             format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond]")
                 .map_err(|_| "Invalid format string")?;
 
-        let valid_until = PrimitiveDateTime::parse(parts[1], &format)
-            .map(|dt| dt.assume_utc()) // Convert to OffsetDateTime with UTC timezone
-            .map_err(|err| {
+        let valid_until: i64 = match PrimitiveDateTime::parse(parts[1], &format) {
+            Ok(dt) => dt.assume_utc().unix_timestamp(),
+            Err(err) => {
                 println!("decrypt valid until error {:?}", err);
-                "Could not decrypt"
-            })?;
+                return Err("Could not decrypt".into());
+            }
+        };
 
         Ok(Self {
             user_id,
@@ -703,7 +735,9 @@ pub async fn signup(
     // Create session (similar to login function)
     let session = FlackSession {
         user_id: user.id,
-        valid_until: OffsetDateTime::now_utc() + Duration::new(SESSION_MAX_AGE_SECONDS.into(), 0),
+        valid_until: (time::OffsetDateTime::now_utc()
+            + tokio::time::Duration::from_secs(SESSION_MAX_AGE_SECONDS.into()))
+        .unix_timestamp(),
     };
     // Encrypt session
     let encrypted_session = match session.encrypt() {

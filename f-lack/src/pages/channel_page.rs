@@ -16,6 +16,7 @@ pub async fn channel_page(
 ) -> impl IntoResponse {
     // todo! run the auth here to get user_id
     let user_id = 1;
+    let user_name = "username_from_auth".to_string();
 
     let (channels, channel_chat_content) = tokio::join!(
         Channel::get_all_channels(&state.pool),
@@ -40,7 +41,7 @@ pub async fn channel_page(
             {header_menu()}
             <div style="height: calc(100% - 60px); position: relative;">
                 {sidebar(channels)}
-                {chat_area(channel_name.clone(), channel_chat_content, channel_id, user_id)}
+                {chat_area(channel_name.clone(), channel_chat_content, channel_id, user_id, user_name)}
             </div>
         </div>
     };
@@ -48,7 +49,12 @@ pub async fn channel_page(
     let shelled_content = page_shell(channel_name, html_content, "".to_string(), "".to_string());
 
     axum::http::Response::builder()
-        .header(axum::http::header::CACHE_CONTROL, "public, max-age=86400")
+        .header(
+            axum::http::header::CACHE_CONTROL,
+            "no-cache, no-store, must-revalidate",
+        )
+        .header(axum::http::header::PRAGMA, "no-cache")
+        .header(axum::http::header::EXPIRES, "0")
         .header(axum::http::header::CONTENT_TYPE, "text/html")
         .body(shelled_content)
         .expect("Failed to render chat page")
