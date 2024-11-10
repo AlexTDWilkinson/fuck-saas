@@ -19,7 +19,10 @@
             // Message sending
             async function sendMessage() {
                 const message = messageInput.value.trim();
-                if (!message) return;
+                if (!message || message.length === 0) {
+                    messageInput.value = '';
+                    return;
+                }
                 const now = Math.floor(new Date().getTime() + new Date().getTimezoneOffset() * 60000); // UTC timestamp in ms
 
                 const tempMessage = {
@@ -41,7 +44,7 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
                 try {
-                    const response = await fetch('/api/messages', {
+                    const response = await fetch('/api/messages/create', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
@@ -56,7 +59,7 @@
                 } catch (error) {
                     console.error('Error sending message:', error);
                     // Remove temporary message if request failed
-                    const contentHash = message.content.split('').reduce((hash, char) => ((hash << 5) - hash) + char.charCodeAt(0), 0).toString(36);
+                    const contentHash = getContentHash(message);
                     document.querySelector(`[data-content-hash="${contentHash}"]`)?.remove();
                     
                     // Show alert to user
@@ -167,7 +170,8 @@
             function formatMessage(message) {
                 const {content, creator_id, username, created_at, edited_at, pending} = message;
                 const cleaned_safe_content = cleanContent(content);
-                const contentHash = message.content.split('').reduce((hash, char) => ((hash << 5) - hash) + char.charCodeAt(0), 0).toString(36);
+
+                const contentHash = getContentHash(message.content);
       
                 const messageActions = creator_id === userId ? `
                     <button 
@@ -419,4 +423,27 @@
                     document.body.appendChild(alert);
                     setTimeout(() => alert.remove(), 5000);
                 }
+            }
+
+            function getContentHash(content) {
+                // Apply the same sanitization as the server
+                const sanitized = content
+                    // Remove DB record separator characters
+                    .replace(/[\u001E\u001F]/g, '')
+                    // Remove control characters (keeping newline and tab)
+                    .replace(/[\x00-\x08\x0B-\x1F\x7F]/g, '')
+                    // Escape HTML/XML tags
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    // Replace quotes
+                    .replace(/'/g, "'")
+                    .replace(/"/g, '"')
+                    // Remove HTML comments
+                    .replace(/<!--/g, '&lt;!--')
+                    .replace(/-->/g, '--&gt;');
+
+                // Generate hash from sanitized content
+                return sanitized.split('').reduce((hash, char) => 
+                    ((hash << 5) - hash) + char.charCodeAt(0), 0
+                ).toString(36);
             }

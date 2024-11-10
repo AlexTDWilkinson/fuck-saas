@@ -26,8 +26,8 @@ pub async fn channel_page(
     let channel_chat_content: String = channel_chat_content.unwrap_or("".to_string());
 
     // print them out for debug
-    println!("channel_chat_content: {}", channel_chat_content);
-    println!("channel_id: {}", channel_id);
+    // println!("channel_chat_content: {}", channel_chat_content);
+    // println!("channel_id: {}", channel_id);
     // channel name
     let channel_name = channels.as_ref().map_or("".to_string(), |channels| {
         channels

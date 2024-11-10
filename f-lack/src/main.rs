@@ -10,6 +10,7 @@ pub mod pages;
 pub mod utils;
 
 use crate::auth::auth::{login, logout, signup};
+use crate::endpoints::channel_create::channel_create;
 use crate::endpoints::message_create::message_create;
 use crate::endpoints::message_edit::message_edit;
 
@@ -72,7 +73,8 @@ async fn main() {
         // Main pages
         .route("/channel/:channel_id", get(channel_page))
         .route("/api/messages/delete", post(message_delete))
-        .route("/api/messages", post(message_create))
+        .route("/api/messages/create", post(message_create))
+        .route("/api/channels/create", post(channel_create))
         .route("/", get(home))
         // .route("/channel/:channel_name", get(channel))
         // .route("/dm/:user_id", get(direct_messages))

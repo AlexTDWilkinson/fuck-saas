@@ -79,11 +79,11 @@ impl Channel {
         let duration = start.elapsed();
         println!("Query execution time: {:?}", duration);
 
-        // Add debug logging
-        match &messages {
-            Ok(msgs) => println!("Found {} messages", msgs.len()),
-            Err(e) => println!("Query error: {}", e),
-        }
+        // // Add debug logging
+        // match &messages {
+        //     Ok(msgs) => println!("Found {} messages", msgs.len()),
+        //     Err(e) => println!("Query error: {}", e),
+        // }
 
         match messages {
             Ok(messages) => Some(

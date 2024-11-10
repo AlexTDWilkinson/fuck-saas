@@ -20,67 +20,77 @@ pub fn chat_area(
                         (content, creator_id, username, timestamp, edited_at),
                     _ => (&"", &"", &"", &"", &""),
                 };
-                html! {
-                    <article id={timestamp.to_string()}>
-                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
-                            <strong>{username}</strong>  {if *creator_id == logged_in_user_id.to_string()
-                                {
-                                    html! {
-                                        <>
-                                            <button
-                                                onclick={format!("editMessage('{}', '{}')", timestamp, content.replace("'", "\\'"))}
-                                                class="button"
-                                                style="font-size: 0.8rem; padding: 0.2rem 0.5rem; background-color: #007bff; color: white; transition: background-color 0.2s; cursor: pointer;"
-                                                onmouseover="this.style.backgroundColor='#0056b3'"
-                                                onmouseout="this.style.backgroundColor='#007bff'"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onclick={format!("deleteMessage('{}')", timestamp)}
-                                                class="button"
-                                                style="font-size: 0.8rem; padding: 0.2rem 0.5rem; background-color: #dc3545; color: white; transition: background-color 0.2s; cursor: pointer;"
-                                                onmouseover="this.style.backgroundColor='#c82333'"
-                                                onmouseout="this.style.backgroundColor='#dc3545'"
-                                            >
-                                                Delete
-                                            </button>
-                                        </>
-                                    }}
-                                else {
-                                    "".to_string()
+                if timestamp == &"" {
+                    "".to_string()
+                } else {
+                    html! {
+                        <article id={timestamp.to_string()}>
+                            <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                                <strong>{username}</strong>  {if *creator_id == logged_in_user_id.to_string()
+                                    {
+                                        html! {
+                                            <>
+                                                <button
+                                                    onclick={format!("editMessage('{}', '{}')", timestamp, content.replace("'", "\\'"))}
+                                                    class="button"
+                                                    style="font-size: 0.8rem; padding: 0.2rem 0.5rem; background-color: #007bff; color: white; transition: background-color 0.2s; cursor: pointer;"
+                                                    onmouseover="this.style.backgroundColor='#0056b3'"
+                                                    onmouseout="this.style.backgroundColor='#007bff'"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onclick={format!("deleteMessage('{}')", timestamp)}
+                                                    class="button"
+                                                    style="font-size: 0.8rem; padding: 0.2rem 0.5rem; background-color: #dc3545; color: white; transition: background-color 0.2s; cursor: pointer;"
+                                                    onmouseover="this.style.backgroundColor='#c82333'"
+                                                    onmouseout="this.style.backgroundColor='#dc3545'"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </>
+                                        }}
+                                    else {
+                                        "".to_string()
+                                    }
                                 }
-                            }
-                            <span style="color: var(--text-secondary); font-size: 0.8rem;">
-                            {if edited_at != &"" {
-                                let ts = edited_at.parse::<i64>().unwrap_or(0);
-                                let date = time::OffsetDateTime::from_unix_timestamp(ts).unwrap_or_else(|_| time::OffsetDateTime::now_utc());
-
-                                format!("{} {:02}, {}, {:02}:{:02} {} (edited)",
-                                    date.month().to_string()[..3].to_string(),
-                                    date.day(),
-                                    date.year(),
-                                    if date.hour() > 12 { date.hour() - 12 } else if date.hour() == 0 { 12 } else { date.hour() },
-                                    date.minute(),
-                                    if date.hour() >= 12 { "p.m." } else { "a.m." }
-                                )
-                            } else {
-                                let ts = timestamp.parse::<i64>().unwrap_or(0);
-                                let date = time::OffsetDateTime::from_unix_timestamp(ts).unwrap_or_else(|_| time::OffsetDateTime::now_utc());
-
-                                format!("{} {:02}, {}, {:02}:{:02} {}",
-                                    date.month().to_string()[..3].to_string(),
-                                    date.day(),
-                                    date.year(),
-                                    if date.hour() > 12 { date.hour() - 12 } else if date.hour() == 0 { 12 } else { date.hour() },
-                                    date.minute(),
-                                    if date.hour() >= 12 { "p.m." } else { "a.m." }
-                                )
-                            }}
-                            </span>
-                        </div>
-                        <p>{content}</p>
-                    </article>
+                                <span style="color: var(--text-secondary); font-size: 0.8rem;">
+                                {if edited_at != &"" {
+                                    let ts = edited_at.parse::<i64>().unwrap_or_default();
+                                    if ts == 0 {
+                                        "".to_string()
+                                    } else {
+                                        let date = time::OffsetDateTime::from_unix_timestamp(ts).unwrap_or_else(|_| time::OffsetDateTime::now_utc());
+                                        format!("{} {:02}, {}, {:02}:{:02} {} (edited)",
+                                            date.month().to_string()[..3].to_string(),
+                                            date.day(),
+                                            date.year(),
+                                            if date.hour() > 12 { date.hour() - 12 } else if date.hour() == 0 { 12 } else { date.hour() },
+                                            date.minute(),
+                                            if date.hour() >= 12 { "p.m." } else { "a.m." }
+                                        )
+                                    }
+                                } else {
+                                    let ts = timestamp.parse::<i64>().unwrap_or_default();
+                                    if ts == 0 {
+                                        "".to_string()
+                                    } else {
+                                        let date = time::OffsetDateTime::from_unix_timestamp(ts).unwrap_or_else(|_| time::OffsetDateTime::now_utc());
+                                        format!("{} {:02}, {}, {:02}:{:02} {}",
+                                            date.month().to_string()[..3].to_string(),
+                                            date.day(),
+                                            date.year(),
+                                            if date.hour() > 12 { date.hour() - 12 } else if date.hour() == 0 { 12 } else { date.hour() },
+                                            date.minute(),
+                                            if date.hour() >= 12 { "p.m." } else { "a.m." }
+                                        )
+                                    }
+                                }}
+                                </span>
+                            </div>
+                            <p>{content}</p>
+                        </article>
+                    }
                 }
             }).collect::<Vec<String>>().join("") }
 
