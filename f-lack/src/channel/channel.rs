@@ -1,6 +1,8 @@
 use crate::message::message::MessageWithUser;
+use crate::user::user::User;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
+use std::collections::HashMap;
 use std::time::Instant;
 
 #[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
@@ -48,6 +50,74 @@ impl Channel {
             Ok(server_channels) => Some(server_channels),
             _ => None,
         }
+    }
+
+    pub async fn get_all_channels_with_users(pool: &SqlitePool) -> Option<Vec<(Self, Vec<User>)>> {
+        // Get all channels with their users in a single query
+        let results = sqlx::query!(
+            r#"
+            SELECT 
+                c.id as channel_id,
+                c.name as channel_name,
+                c.created_at as channel_created_at,
+                a.id as user_id,
+                a.username as username,
+                a.email as email,
+                a.password_hash as password_hash,
+                a.created_at as user_created_at,
+                a.permissions as permissions,
+                a.set_password_mode as set_password_mode,
+                a.set_password_pin as set_password_pin,
+                a.set_password_attempts as set_password_attempts,
+                a.user_disabled as user_disabled,
+                a.user_deleted as user_deleted
+            FROM channel c
+            LEFT JOIN channel_user cu ON c.id = cu.channel_id
+            LEFT JOIN account a ON cu.user_id = a.id
+            WHERE a.user_deleted = 0 OR a.id IS NULL
+            ORDER BY c.name, a.username
+            "#
+        )
+        .fetch_all(pool)
+        .await
+        .map_err(|err| {
+            eprintln!("get all channels with users error: {:?}", err);
+            err
+        })
+        .ok()?;
+
+        let mut channel_map: std::collections::HashMap<i64, (Channel, Vec<User>)> = HashMap::new();
+
+        for row in results {
+            let channel = Channel {
+                id: row.channel_id,
+                name: row.channel_name,
+                created_at: row.channel_created_at,
+            };
+
+            let entry = channel_map
+                .entry(row.channel_id)
+                .or_insert_with(|| (channel, Vec::new()));
+
+            entry.1.push(User {
+                id: row.user_id,
+                username: row.username.unwrap_or_default(),
+                email: row.email.unwrap_or_default(),
+                password_hash: row.password_hash.unwrap_or_default(),
+                created_at: row.user_created_at.unwrap_or_default(),
+                permissions: row.permissions.unwrap_or_default(),
+                set_password_mode: row.set_password_mode.unwrap_or_default(),
+                set_password_pin: row.set_password_pin,
+                set_password_attempts: row.set_password_attempts,
+                user_disabled: row.user_disabled.unwrap_or_default(),
+                user_deleted: row.user_deleted.unwrap_or_default(),
+            });
+        }
+
+        // sort for UI stability
+        let mut channels: Vec<_> = channel_map.into_values().collect();
+        channels.sort_by(|a, b| a.0.name.cmp(&b.0.name));
+        Some(channels)
     }
 
     pub async fn get_channel_messages_with_users(

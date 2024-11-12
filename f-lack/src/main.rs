@@ -3,6 +3,7 @@ pub mod channel;
 pub mod components;
 pub mod endpoints;
 pub mod error_template;
+pub mod user;
 use crate::endpoints::message_delete::message_delete;
 pub mod fileserv;
 pub mod message;
@@ -11,6 +12,7 @@ pub mod utils;
 
 use crate::auth::auth::{login, logout, signup};
 use crate::endpoints::channel_create::channel_create;
+use crate::endpoints::channel_delete::channel_delete;
 use crate::endpoints::message_create::message_create;
 use crate::endpoints::message_edit::message_edit;
 
@@ -18,6 +20,7 @@ use crate::endpoints::message_poll::message_poll;
 use crate::fileserv::file_and_error_handler;
 use crate::pages::channel_page::channel_page;
 use crate::pages::home::home;
+use crate::pages::settings::settings;
 use dotenv::dotenv;
 
 // use crate::pages::admin_page::admin_page;
@@ -64,7 +67,6 @@ async fn main() {
         .expect("Failed to migrate database");
 
     let app_state = AppState { pool: pool.clone() };
-
     let app = Router::new()
         // Auth routes
         // .route("/login", get(login_page).post(login))
@@ -75,7 +77,9 @@ async fn main() {
         .route("/api/messages/delete", post(message_delete))
         .route("/api/messages/create", post(message_create))
         .route("/api/channels/create", post(channel_create))
+        .route("/api/channels/delete/:id", post(channel_delete))
         .route("/", get(home))
+        .route("/settings", get(settings))
         // .route("/channel/:channel_name", get(channel))
         // .route("/dm/:user_id", get(direct_messages))
         // .route("/settings", get(user_settings))

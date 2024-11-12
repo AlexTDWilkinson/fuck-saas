@@ -1,3 +1,4 @@
+use crate::user::user::User;
 use crate::AppState;
 use aes_gcm::aead::Aead;
 use aes_gcm::*;
@@ -20,22 +21,6 @@ pub static SESSION_KEY: LazyLock<Key<Aes256Gcm>> =
     LazyLock::new(|| *Key::<Aes256Gcm>::from_slice(&[42; 32]));
 
 const SESSION_MAX_AGE_SECONDS: u32 = 3600; // 4 hours
-
-#[derive(sqlx::FromRow, Clone, Debug, Serialize, Deserialize)]
-pub struct User {
-    pub id: i64,
-    pub username: Option<String>,
-    pub email: String,
-    #[serde(skip_serializing)]
-    pub password_hash: String,
-    pub created_at: i64,
-    pub permissions: Option<String>,
-    pub set_password_mode: bool,
-    pub set_password_pin: Option<i64>,
-    pub set_password_attempts: Option<i64>,
-    pub user_disabled: bool,
-    pub user_deleted: bool,
-}
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LoginFormError {
@@ -62,10 +47,7 @@ use sqlx::SqlitePool;
 
 impl User {
     pub fn is_admin(&self) -> bool {
-        self.permissions
-            .as_ref()
-            .map(|p| p.contains("admin"))
-            .unwrap_or(false)
+        self.permissions.contains("admin")
     }
 
     pub async fn get_by_id(id: i64, pool: &SqlitePool) -> Option<Self> {

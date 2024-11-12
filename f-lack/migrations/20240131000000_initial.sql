@@ -32,6 +32,12 @@ CREATE TABLE IF NOT EXISTS session (
     valid_until INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS channel_user (
+    channel_id INTEGER NOT NULL REFERENCES channel(id),
+    user_id INTEGER NOT NULL REFERENCES account(id),
+    PRIMARY KEY (channel_id, user_id)
+);
+
 INSERT INTO account (id,username,email,password_hash,permissions)
      VALUES (0, 'test_admin', 'test_email', 'blahblah', 'admin'),
             (1, 'alice', 'alice_email', 'blahblah', ''),
@@ -42,6 +48,15 @@ INSERT INTO channel (id,name,created_at)
      VALUES (0, 'General', 1730950674183),      -- Jan 1, 2024 11:59:43 AM
             (1, 'Random', 1730950674562),       -- Jan 2, 2024 12:12:42 PM
             (2, 'Announcements', 1730950674147); -- Jan 3, 2024 12:15:47 PM
+
+INSERT INTO channel_user (channel_id, user_id)
+VALUES 
+    (0, 0), -- test_admin in General
+    (0, 1), -- alice in General
+    (0, 2), -- bob in General
+    (1, 1), -- alice in Random
+    (1, 2), -- bob in Random
+    (2, 0); -- test_admin in Announcements
 
 INSERT INTO message (created_at,creator_id,channel_id,content,edited_at)
      VALUES (1730950674213, 1, 0, '<strong>I am alice!</strong> Hello general channel 👋', NULL),                                              -- Jan 1, 2024 12:13:33 AM
